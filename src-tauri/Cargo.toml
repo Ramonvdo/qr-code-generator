@@ -49,7 +49,7 @@ getrandom = "0.3"
 # The only network dependency, and the only reason this app opens a socket:
 # sending a ticket to the person who bought it, when the operator presses Send.
 # Blocking and small, rustls TLS via default features, no async runtime.
-ureq = { version = "2", features = ["json"] }
+ureq = { version = "3", features = ["json"] }
 
 # Buyer lists. Real ones contain quoted commas and embedded newlines, and
 # splitting on commas is how a ticket reaches the wrong address.
