@@ -6,6 +6,11 @@ src-tauri/target/
 # Tauri regenerates these capability schemas on every build.
 src-tauri/gen/schemas/
 
+# `tauri icon` emits mobile sets too. This is a desktop app and does not
+# build for either, so they are clutter rather than assets.
+src-tauri/icons/android/
+src-tauri/icons/ios/
+
 # Signing material. NEVER commit a certificate or private key.
 *.pfx
 *.p12

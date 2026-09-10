@@ -127,7 +127,7 @@ npm run app:dev      # run it
 npm run app:build    # produce an installer
 ```
 
-The app icon is generated, not drawn by hand. `npm run icon` rebuilds `app-icon.png` from `scripts/make-icon.mjs` and expands it into the platform set.
+`app-icon.png` in the repository root is the icon source. Replace it and run `npm run icon` to expand it into the platform set that ships with the app.
 
 ## Known limitations
 
