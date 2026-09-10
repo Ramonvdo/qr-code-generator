@@ -73,9 +73,17 @@ jobs:
       - name: Checksums
         shell: bash
         run: |
+          # macOS ships shasum (Perl) and no sha256sum; Git Bash on the Windows
+          # runner ships sha256sum and no shasum. Neither has the other, so
+          # pick whichever is actually there rather than assuming.
+          if command -v sha256sum >/dev/null 2>&1; then
+            hash="sha256sum"
+          else
+            hash="shasum -a 256"
+          fi
           cd src-tauri/target/${{ matrix.bundle_dir }}/bundle
           find . -type f \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) -print0 |
-            xargs -0 -r shasum -a 256 > "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
+            xargs -0 -r $hash > "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
           cat "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
 
       # Attached to the release itself, not just kept as a workflow artifact.
