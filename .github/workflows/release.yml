@@ -78,6 +78,20 @@ jobs:
             xargs -0 -r shasum -a 256 > "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
           cat "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
 
+      # Attached to the release itself, not just kept as a workflow artifact.
+      # The release notes tell people to check their download against this
+      # file, so it has to be next to the download rather than behind a login
+      # on the Actions tab.
+      - name: Attach checksums to the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
+        run: |
+          gh release upload "$TAG" \
+            "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt" \
+            --clobber --repo "$GITHUB_REPOSITORY"
+
       - uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: SHA256SUMS-${{ matrix.platform }}
