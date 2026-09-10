@@ -82,8 +82,20 @@ jobs:
             hash="shasum -a 256"
           fi
           cd src-tauri/target/${{ matrix.bundle_dir }}/bundle
+          # The names are rewritten to match the release assets. The bundler
+          # emits "./nsis/QR Code Generator_0.1.0_x64-setup.exe", while GitHub
+          # publishes that as "QR.Code.Generator_0.1.0_x64-setup.exe", so
+          # `sha256sum -c` against a downloaded file fails on the raw output.
           find . -type f \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) -print0 |
-            xargs -0 -r $hash > "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
+            xargs -0 -r $hash |
+            awk '{
+              h = $1; p = $0
+              sub(/^[^ ]+ +/, "", p)       # drop the hash
+              sub(/^\*/, "", p)            # drop sha256sum binary marker
+              sub(/^\.\/[^\/]+\//, "", p)  # drop the bundle subdirectory
+              gsub(/ /, ".", p)            # spaces become dots
+              print h "  " p
+            }' > "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
           cat "$RUNNER_TEMP/SHA256SUMS-${{ matrix.platform }}.txt"
 
       # Attached to the release itself, not just kept as a workflow artifact.
