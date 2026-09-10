@@ -3258,7 +3258,7 @@ dependencies = [
  "chrono",
  "csv",
  "ed25519-dalek",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "image",
  "lopdf",
  "qrcode",
