@@ -1,0 +1,67 @@
+[package]
+name = "qr-code-generator"
+version = "0.1.0"
+description = "A fast, local QR code generator. Paste, generate, export."
+authors = ["QR Code Generator contributors"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "qr_code_generator_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-clipboard-manager = "2"
+# The paste-and-go shortcut, and making sure a second launch focuses the
+# window that already owns it rather than starting a rival copy.
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-single-instance = "2"
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Encoding only. We render the modules ourselves (see render.rs) because the
+# crate's built-in SVG writer can't do rounded modules or a logo hole, and
+# default-features would drag in a second copy of `image` we don't need.
+qrcode = { version = "0.14", default-features = false }
+
+# PNG output. No decoders beyond PNG: nothing else is ever read back.
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
+
+# Reads our own output back to prove it scans (verify.rs). A different
+# implementation from the encoder, so agreement is real evidence.
+rqrr = "0.11"
+
+# Ticket signing. A door scanner verifies with the public key alone, so it
+# needs no network and no guest list, and forging needs the private key.
+ed25519-dalek = "2"
+# Key material. Used directly rather than through rand_core so the app does not
+# have to track which rand_core major version dalek currently expects.
+getrandom = "0.3"
+
+# The only network dependency, and the only reason this app opens a socket:
+# sending a ticket to the person who bought it, when the operator presses Send.
+# Blocking and small, rustls TLS via default features, no async runtime.
+ureq = { version = "2", features = ["json"] }
+
+# Buyer lists. Real ones contain quoted commas and embedded newlines, and
+# splitting on commas is how a ticket reaches the wrong address.
+csv = "1"
+
+# PDF templates: stamping a code and a number onto pages the user supplies.
+lopdf = "0.38"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

@@ -1,0 +1,19 @@
+# Build output
+node_modules/
+dist/
+src-tauri/target/
+
+# Tauri regenerates these capability schemas on every build.
+src-tauri/gen/schemas/
+
+# Signing material. NEVER commit a certificate or private key.
+*.pfx
+*.p12
+*.key
+*.cer
+
+# Local editor and OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
