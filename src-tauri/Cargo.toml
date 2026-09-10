@@ -41,7 +41,7 @@ rqrr = "0.11"
 
 # Ticket signing. A door scanner verifies with the public key alone, so it
 # needs no network and no guest list, and forging needs the private key.
-ed25519-dalek = "2"
+ed25519-dalek = "3"
 # Key material. Used directly rather than through rand_core so the app does not
 # have to track which rand_core major version dalek currently expects.
 getrandom = "0.3"
