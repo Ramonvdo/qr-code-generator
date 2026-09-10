@@ -41,7 +41,11 @@
     "shortDescription": "A fast, local QR code generator.",
     "longDescription": "Paste a link, get a QR code, export it as SVG or PNG. Codes are static, so they never expire and never phone home. Everything runs locally with no account and no network.",
     "windows": {
-      "nsis": { "installMode": "currentUser" },
+      "nsis": {
+        "installMode": "currentUser",
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico"
+      },
       "webviewInstallMode": { "type": "downloadBootstrapper" }
     },
     "macOS": { "minimumSystemVersion": "10.15" }
